@@ -41,6 +41,7 @@ USOSweb 7 is built from **Lit web components with open shadow roots**, styled vi
   - `features/*`: `{ id, mount(ctx), unmount?, update? }` registered via `USM.registerFeature`, mounted in registration order (topbar must precede drawer/account). `ctx = { settings, action, cas }`.
   - `pages/*`: `USM.registerPage({ id, match(action), mount, unmount })`.
   - `main.js`: reads settings, mounts/unmounts everything when the mode changes; when the mode is off on a phone it puts a "wersja mobilna" link into `cas-bar`'s `extra-actions` slot.
+- `src/cas/cas.css`: the login page lives on a different domain (`usoscas.polsl.pl/cas/*`, plain HTML with its own viewport meta). It gets a static manifest `css` content script limited to `@media (max-width: 880px)`, with no settings or JS.
 - `popup/` writes the same `settings` object to `storage.local`. Changes propagate live via `storage.onChanged`.
 
 **Styles** (`src/styles/`, concatenated by `scripts/build.mjs`):

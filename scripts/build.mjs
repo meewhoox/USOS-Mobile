@@ -43,7 +43,7 @@ function build() {
 
   rmSync(OUT, { recursive: true, force: true });
   mkdirSync(OUT, { recursive: true });
-  for (const d of ['content', 'popup', '_locales', 'icons']) cpSync(join(SRC, d), join(OUT, d), { recursive: true });
+  for (const d of ['content', 'cas', 'popup', '_locales', 'icons']) cpSync(join(SRC, d), join(OUT, d), { recursive: true });
   writeFileSync(join(OUT, 'manifest.json'), JSON.stringify(manifest, null, 2));
   writeFileSync(join(OUT, 'early.js'), early);
 

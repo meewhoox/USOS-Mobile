@@ -1,0 +1,19 @@
+/*
+ * usoscas.polsl.pl (CAS login page) — plain HTML page with its own viewport meta,
+ * so a static stylesheet is enough (no shadow DOM, no settings).
+ * Fix: on phones the "Zaloguj się" button sticks to the bottom-left edge of the form box;
+ * align it with the inputs and stretch it to their width.
+ */
+@media (max-width: 880px) {
+  #fm1 .form-button-row {
+    margin: 16px 24px 0;
+  }
+  #fm1 .form-button-row > div {
+    flex: 1 1 100%;
+  }
+  #fm1 .form-button-row .form-button {
+    width: 100%;
+    min-height: 48px;
+    border-radius: 4px;
+  }
+}
