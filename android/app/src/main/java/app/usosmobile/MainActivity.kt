@@ -48,6 +48,7 @@ class MainActivity : ComponentActivity() {
             navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
         )
         super.onCreate(savedInstanceState)
+        preferHighRefreshRate()
 
         webView = WebView(this)
         val root = FrameLayout(this).apply {
@@ -72,6 +73,22 @@ class MainActivity : ComponentActivity() {
 
         if (savedInstanceState == null || webView.restoreState(savedInstanceState) == null) {
             webView.loadUrl(START_URL)
+        }
+    }
+
+    /**
+     * Ask for the display's highest refresh rate at the current resolution. In "auto" mode many
+     * phones keep a WebView at 60 Hz, because it doesn't vote for a higher frame rate itself.
+     */
+    private fun preferHighRefreshRate() {
+        val display = ContextCompat.getDisplayOrDefault(this)
+        val current = display.mode
+        val best = display.supportedModes
+            .filter { it.physicalWidth == current.physicalWidth && it.physicalHeight == current.physicalHeight }
+            .maxByOrNull { it.refreshRate } ?: return
+        window.attributes = window.attributes.apply {
+            preferredDisplayModeId = best.modeId
+            preferredRefreshRate = best.refreshRate
         }
     }
 
