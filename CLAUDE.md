@@ -8,7 +8,7 @@ Android WebView app (`android/`, Kotlin) that shows USOSweb at Politechnika Śl�
 
 ```sh
 cd android && ./gradlew assembleDebug   # JAVA_HOME = Android Studio's jbr; runs the JS build first
-npm run build        # node scripts/build.mjs → android/app/src/main/assets/usm.js, usm-cas.js + dist/dev-inject.js
+npm run build        # node scripts/build.mjs → android/app/src/main/assets/usm.js, usm-cas.js + dist/dev-inject.js, dist/test-setup.js
 npm run watch        # rebuild on changes in src/
 ```
 
@@ -30,11 +30,19 @@ npm run watch        # rebuild on changes in src/
 On a device: run from Android Studio, inspect via `chrome://inspect`.
 
 Without a device, in the Chrome DevTools MCP browser (the user is logged into USOS there):
-1. emulate a phone (e.g. viewport `390x844x3,mobile,touch`, Android UA),
-2. navigate to a USOS page, then `evaluate_script` with `format: "script"` and `sourcePath` = `dist/dev-inject.js` (re-navigate before re-injecting; it guards against double injection),
-3. optionally run `scripts/audit.js` the same way. It reports elements overflowing the viewport, tables wrapped for scrolling, small tap targets, and custom elements in the content.
+1. `npm run build`, then emulate a phone: viewport **`390x844x1,mobile,touch`** (DPR 1, see below), Android UA.
+2. On any USOS page, once per build: `evaluate_script` with `format: "script"`, `sourcePath` = `dist/test-setup.js`. It stores the bundle and `scripts/audit.js` in the page's `localStorage` (`__usmSrc`, `__usmAudit`).
+3. For every page: `navigate_page` (url or reload) with `initScript` = `eval(localStorage.getItem('__usmAudit'));eval(localStorage.getItem('__usmSrc'))`. This injects before the page's scripts, like the app. `initScript` applies to one navigation only: pass it every time.
+4. `evaluate_script` → `() => window.__usmAudit()` (waits 1.2 s, returns JSON; field meanings in the header of `scripts/audit.js`). Red flags: `iw` (page wider than the screen → the fixed bars move/stretch), `overflow`, `escaped`, `squeezed`, `warns`.
+5. When done: remove `__usmSrc`/`__usmAudit` from `localStorage`; if the theme was changed, `USM.storage.set({ theme: 'default' })`.
 
-Caveats: when injected from DevTools, the CSS is applied after the components render, so you may catch transitions mid-way (e.g. the subpage sheet edge). `fetch`/XHR from the page to `localhost` is blocked by Chrome Private Network Access.
+Keep context usage low (screenshots are the most expensive tool output):
+- DPR 1 (`390x844x1`): a 390×844 screenshot is still readable and costs a fraction of DPR 3.
+- Audit first; screenshot only pages the audit flags or where layout must be judged visually. No `fullPage` by default: scroll the problem into view (`evaluate_script` + `scrollTo`) and take a viewport shot, or screenshot one element (`uid` from `take_snapshot`). JPEG.
+- `take_snapshot` (accessibility tree as text) for content/structure checks instead of a screenshot.
+- Sweeps over many pages: hand them to a subagent (only when the user asks for one), so the per-page output stays out of the main context.
+
+Caveats: USOS pages refuse to load in an `iframe`, so every page needs its own navigation. A full-page screenshot shows the bottom nav mid-page (capture artifact). `dist/dev-inject.js` (same bundle) can still be run after load via `sourcePath`, but then the CSS lands after the components render, so you may catch transitions mid-way. `fetch`/XHR from the page to `localhost` is blocked by Chrome Private Network Access.
 
 ## Architecture
 

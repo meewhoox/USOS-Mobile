@@ -622,6 +622,9 @@ html[data-usm] #layout-main-content pre {
   white-space: pre-wrap;
 }
 .usm-hscroll {
+  /* contains absolutely positioned bits (USOS .screen-reader-only labels in cells), which
+     would otherwise escape the scroller and widen the layout viewport */
+  position: relative;
   max-width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;

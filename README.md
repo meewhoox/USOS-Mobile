@@ -53,4 +53,5 @@ Zmiana motywu: arkusz konta → `USM.storage.set()` → `localStorage` + zdarzen
 ### Testowanie w Chrome DevTools (bez telefonu)
 
 Po `npm run build` wykonaj zawartość `dist/dev-inject.js` w konsoli strony USOS z włączoną emulacją
-telefonu. `scripts/audit.js` raportuje elementy wychodzące poza ekran.
+telefonu. Dokładniejsza procedura (wstrzykiwanie przed skryptami strony przez `dist/test-setup.js`
+i audyt `scripts/audit.js`: elementy poza ekranem, poszerzona strona, ściśnięty tekst, małe cele dotyku) jest w `CLAUDE.md`.
