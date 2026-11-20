@@ -25,19 +25,14 @@ html[data-usm] {
   --usm-topbar-bg: #4f4c6a;
   --usm-topbar-fg: #ffffff;
   --usm-topbar-shadow: 0 2px 6px rgba(6, 6, 51, 0.18);
-
-  --usm-tabs-bg: #efeff1;
-  --usm-tab-fg: #06022e;
-  --usm-tab-active-fg: #06022e;
-  --usm-tab-active-bg: transparent;
-  --usm-tab-indicator: #fbb040;
-  --usm-tab-radius: 0px;
-  --usm-tab-h: 48px;
-  --usm-tab-gap: 0px;
+  --usm-nav-h: 64px;
+  --usm-nav-bg: #ffffff;
+  --usm-nav-fg: #57546b;
+  --usm-nav-active-fg: #06022e;
+  --usm-nav-pill: rgba(251, 176, 64, 0.32);
+  --usm-nav-border: #dadade;
 
   --usm-drawer-bg: #efeff1;
-  --usm-drawer-head-bg: #4f4c6a;
-  --usm-drawer-head-fg: #ffffff;
   --usm-selected-bg: rgba(79, 76, 106, 0.12);
 
   --usm-radius: 6px;
@@ -69,18 +64,13 @@ html[data-usm][data-usm-theme='modern'] {
 
   --usm-topbar-bg: linear-gradient(120deg, #221f45 0%, #3b3866 60%, #4f4c6a 100%);
   --usm-topbar-shadow: inset 0 -2px 0 #f5a623, 0 4px 14px rgba(20, 17, 46, 0.18);
-
-  --usm-tabs-bg: #ffffff;
-  --usm-tab-fg: #5f5c75;
-  --usm-tab-active-fg: #221f45;
-  --usm-tab-active-bg: #fff0d4;
-  --usm-tab-indicator: transparent;
-  --usm-tab-radius: 999px;
-  --usm-tab-h: 36px;
-  --usm-tab-gap: 6px;
+  --usm-nav-bg: #ffffff;
+  --usm-nav-fg: #5f5c75;
+  --usm-nav-active-fg: #221f45;
+  --usm-nav-pill: #ffe7b8;
+  --usm-nav-border: #e3e1ec;
 
   --usm-drawer-bg: #ffffff;
-  --usm-drawer-head-bg: linear-gradient(120deg, #221f45 0%, #4f4c6a 100%);
   --usm-selected-bg: #f0eef9;
 
   --usm-radius: 12px;
@@ -136,16 +126,13 @@ html[data-usm][data-usm-theme='dark'] {
   --usm-topbar-bg: #1e1c2c;
   --usm-topbar-fg: #f2f1f8;
   --usm-topbar-shadow: 0 1px 0 #2c2a3d;
-
-  --usm-tabs-bg: #17161f;
-  --usm-tab-fg: #a9a6bf;
-  --usm-tab-active-fg: #ffffff;
-  --usm-tab-active-bg: transparent;
-  --usm-tab-indicator: #fbb040;
+  --usm-nav-bg: #1b1a26;
+  --usm-nav-fg: #a9a6bf;
+  --usm-nav-active-fg: #ffffff;
+  --usm-nav-pill: rgba(251, 176, 64, 0.2);
+  --usm-nav-border: #2c2a3d;
 
   --usm-drawer-bg: #1b1a26;
-  --usm-drawer-head-bg: #1e1c2c;
-  --usm-drawer-head-fg: #f2f1f8;
   --usm-selected-bg: rgba(251, 176, 64, 0.12);
 
   --usm-radius: 10px;

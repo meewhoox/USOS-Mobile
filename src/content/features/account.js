@@ -15,11 +15,6 @@
   };
   const THEME_LABEL = { default: 'themeDefault', modern: 'themeModern', dark: 'themeDark' };
 
-  const loginUrl = (cas) =>
-    cas?.getAttribute('login-url') ||
-    cas?.shadowRoot?.querySelector('a[href*="logowaniecas/index"]')?.href ||
-    '/kontroler.php?_action=logowaniecas/index';
-
   const row = (href, iconName, label, extra = {}) =>
     h('a', { class: 'usm-row', href, ...extra }, icon(iconName), h('span', null, label));
 
@@ -32,6 +27,8 @@
       const user = cas?.getAttribute('logged-user') || '';
       const langUrl = cas?.getAttribute('lang-switch-url');
       const myUsos = document.querySelector('menu-top-item[href*="home/index"]')?.getAttribute('href');
+      // "katalog" (people / units / courses search) is not in the bottom nav — it lives here.
+      const catalog = document.querySelector('menu-top-item[href*="katalog2/index"]:not([greyed])');
       const lang = USM.lang();
 
       this.themeButtons = USM.THEMES.map((id) => {
@@ -87,10 +84,11 @@
           user
             ? [
                 myUsos && row(myUsos, 'person', t('myUsos')),
+                catalog && row(catalog.getAttribute('href'), 'catalog', USM.cap(catalog.getAttribute('name') || '')),
                 cas.getAttribute('passwd-url') && row(cas.getAttribute('passwd-url'), 'key', t('changePassword')),
                 cas.getAttribute('logout-url') && row(cas.getAttribute('logout-url'), 'logout', t('logout')),
               ]
-            : row(loginUrl(cas), 'login', t('login'), { class: 'usm-row usm-row-primary' })
+            : row(USM.loginUrl(cas), 'login', t('login'), { class: 'usm-row usm-row-primary' })
         ),
         h('div', { class: 'usm-sheet-section' }, h('div', { class: 'usm-sheet-label' }, t('language')), langSeg),
         h(

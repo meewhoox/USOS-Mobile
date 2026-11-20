@@ -16,23 +16,29 @@
   margin: 16px 16px 28px !important;
 }
 
-/* !important inside a shadow tree beats light-DOM !important; transform is left
+/* Left menu → bottom sheet with the section's subpages (state: [usm-drawer-open]).
+   !important inside a shadow tree beats light-DOM !important; transform is left
    overridable so the swipe gesture can drive it with an inline style. */
 :host ::slotted([slot='left-menu']) {
   position: fixed !important;
-  inset: 0 auto 0 0 !important;
+  inset: auto 0 0 0 !important;
   z-index: 1001 !important;
   display: block !important;
   box-sizing: border-box !important;
-  width: min(86vw, 340px) !important;
+  width: 100% !important;
+  max-width: 560px !important;
   height: auto !important;
-  padding: 0 0 calc(24px + env(safe-area-inset-bottom)) !important;
+  max-height: 82vh !important;
+  max-height: 82dvh !important;
+  margin: 0 auto !important;
+  padding: 0 0 calc(16px + env(safe-area-inset-bottom)) !important;
   overflow-y: auto !important;
   overscroll-behavior: contain;
+  border-radius: var(--usm-radius-lg) var(--usm-radius-lg) 0 0 !important;
   background: var(--usm-drawer-bg) !important;
   box-shadow: none;
   visibility: hidden;
-  transform: translateX(-102%);
+  transform: translateY(102%);
   transition: transform 0.26s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear 0.26s, box-shadow 0.26s;
 }
 :host([usm-drawer-open]) ::slotted([slot='left-menu']) {

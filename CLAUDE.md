@@ -23,7 +23,7 @@ Changes are verified visually in the Chrome DevTools MCP browser (the user is lo
 2. navigate to a USOS page, then `evaluate_script` with `format: "script"` and `sourcePath` = `dist/dev-inject.js` (re-navigate before re-injecting; it guards against double injection),
 3. optionally run `scripts/audit.js` the same way. It reports elements overflowing the viewport, tables wrapped for scrolling, small tap targets, and custom elements in the content.
 
-Caveats: in dev-inject mode the CSS is applied after the components render, so you may catch transitions mid-way (e.g. the drawer edge). `fetch`/XHR from the page to `localhost` is blocked by Chrome Private Network Access. Settings in dev mode live only in page `localStorage` (`usm:settings`).
+Caveats: in dev-inject mode the CSS is applied after the components render, so you may catch transitions mid-way (e.g. the subpage sheet edge). `fetch`/XHR from the page to `localhost` is blocked by Chrome Private Network Access. Settings in dev mode live only in page `localStorage` (`usm:settings`).
 
 ## Architecture
 
@@ -38,7 +38,8 @@ USOSweb 7 is built from **Lit web components with open shadow roots**, styled vi
   - Activation is synchronous from the `localStorage` mirror `usm:settings`. Toggling only refills or empties the sheets, with no page reload.
 - `src/content/*` runs in the **ISOLATED world**. The files share `globalThis.USM` (defined in `core.js`); each file is an IIFE. Load order comes from the `js` array in `src/manifest.json` (`core.js` first, `main.js` last). New page modules must be added there.
   - `core.js`: settings in `storage.local` (falls back to `localStorage` when there are no extension APIs), mirrored to `localStorage` and pushed to MAIN via the `usm:settings` CustomEvent (string `detail`). Also i18n strings PL/EN (by page `lang`), the `h()` DOM builder, inline SVG `icon()`, `waitFor`, `collapsibleFrames` (uses the native `expandable`/`expanded` attributes of `usos-frame`, persisted per page).
-  - `features/*`: `{ id, mount(ctx), unmount?, update? }` registered via `USM.registerFeature`, mounted in registration order (topbar must precede drawer/account). `ctx = { settings, action, cas }`.
+  - `features/*`: `{ id, mount(ctx), unmount?, update? }` registered via `USM.registerFeature`, mounted in registration order (topbar must precede submenu/account, which hook into its buttons). `ctx = { settings, action, cas }`.
+  - Navigation model: `menu-top` is hidden. `topbar.js` shows `[logo USOSweb → Aktualności/home] | [Section › Subpage ▾] [avatar]`. `submenu.js` turns `menu-left` (the current section's subpages, the only menu USOS sends) into a bottom sheet. `bottomnav.js` holds the sections Mój USOSweb / Dla studentów / Dla wszystkich and delegates taps to the original `menu-top-item` link so its `onclick` runs; it is always visible except while a text field is focused (keyboard). "Katalog" is a row in the account sheet; "dla pracowników" is intentionally omitted.
   - `pages/*`: `USM.registerPage({ id, match(action), mount, unmount })`.
   - `main.js`: reads settings, mounts/unmounts everything when the mode changes; when the mode is off on a phone it puts a "wersja mobilna" link into `cas-bar`'s `extra-actions` slot.
 - `src/cas/cas.css`: the login page lives on a different domain (`usoscas.polsl.pl/cas/*`, plain HTML with its own viewport meta). It gets a static manifest `css` content script limited to `@media (max-width: 880px)`, with no settings or JS.
@@ -53,7 +54,7 @@ USOSweb 7 is built from **Lit web components with open shadow roots**, styled vi
 Behaviour to preserve:
 - USOS links use `onclick="return Common.confirmWarnings();"`. Keep existing elements in place or move them, never recreate links.
 - The desktop `cas-bar` and `app-header` are hidden. Their data comes from `cas-bar` attributes (`logged-user`, `logout-url`, `passwd-url`, `lang-switch-url`).
-- `menu-left` stays in its slot; the drawer is the `[usm-drawer-open]` attribute on `main-panel` plus positioning in `components/main-panel.css`.
+- `menu-left` stays in its slot; the subpage sheet is the `[usm-drawer-open]` attribute on `main-panel` plus positioning in `components/main-panel.css`.
 - The isolated world cannot see Lit properties or `customElements` (Chrome), so it polls shadow DOM with `waitFor`.
 
 ## Product decisions (from the user)
@@ -61,5 +62,5 @@ Behaviour to preserve:
 - The only target is Firefox for Android.
 - Mobile mode is always on in a phone browser (`/Mobi|Android.+Mobile|iPhone|iPod/` UA). Modes: `auto` / `always` / `off`.
 - Themes: `default` (USOS/PŚ colours), `modern` (PŚ navy + gold, deliberately not generic), `dark`.
-- Current scope is a "responsive USOS", with navigation kept open for later expansion (e.g. a bottom nav).
+- Navigation: bottom nav with 3 sections, top-bar section/subpage sheet (decided 2026-11-20). Favourite-page shortcuts are planned for later. The project will later also ship as an Android WebView app, so keep the content scripts free of extension-only assumptions where possible.
 - Subpages are reviewed one by one. Done: top-nav landing pages (aktualności, katalog, mój USOSweb, dla studentów, dla wszystkich). Not yet: oceny, sprawdziany, plan zajęć, rejestracje, podania.

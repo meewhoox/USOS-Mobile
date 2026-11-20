@@ -53,9 +53,9 @@
       "js": [
         "content/core.js",
         "content/features/topbar.js",
-        "content/features/drawer.js",
+        "content/features/submenu.js",
+        "content/features/bottomnav.js",
         "content/features/account.js",
-        "content/features/tabs.js",
         "content/features/content.js",
         "content/pages/home.js",
         "content/main.js"

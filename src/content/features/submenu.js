@@ -1,34 +1,44 @@
 /*
- * Off-canvas drawer built from the existing <menu-left> (kept in place, so its
- * links and onclick handlers stay untouched). Open state = attribute on <main-panel>,
- * positioning comes from styles/components/main-panel.css.
+ * Section subpages as a bottom sheet, built from the existing <menu-left> — kept in its
+ * slot, so its links and onclick handlers stay untouched. Opened by the top bar's context
+ * button; open state = attribute on <main-panel>, positioning in styles/components/main-panel.css.
  */
 (() => {
   'use strict';
-  const { h, icon, t } = globalThis.USM;
+  const USM = globalThis.USM;
+  const { h, icon, t } = USM;
   const OPEN_ATTR = 'usm-drawer-open';
 
-  globalThis.USM.registerFeature({
-    id: 'drawer',
+  USM.registerFeature({
+    id: 'submenu',
     mount() {
       const panel = document.querySelector('main-panel');
       const menu = panel?.querySelector(':scope > menu-left');
       const btn = document.getElementById('usm-menu-btn');
       if (!panel || !menu || !menu.querySelector('a')) {
-        if (btn) btn.hidden = true;
+        // No subpages: the context button is just a title.
+        btn?.setAttribute('disabled', '');
+        btn?.classList.add('usm-context-static');
         return;
       }
       this.panel = panel;
       this.menu = menu;
       this.btn = btn;
 
+      const title = btn?.querySelector('small')?.textContent || btn?.querySelector('b')?.textContent || t('subpages');
       this.head = h(
         'div',
-        { class: 'usm-drawer-head' },
-        h('span', null, t('menu')),
-        h('button', { type: 'button', class: 'usm-icon-btn', 'aria-label': t('closeMenu'), onclick: () => this.close() }, icon('close'))
+        { class: 'usm-sheet-head-bar' },
+        h('div', { class: 'usm-sheet-grip', 'aria-hidden': 'true' }),
+        h(
+          'div',
+          { class: 'usm-sheet-title' },
+          h('span', null, title),
+          h('button', { type: 'button', class: 'usm-icon-btn', 'aria-label': t('closeSubpages'), onclick: () => this.close() }, icon('close'))
+        )
       );
       menu.prepend(this.head);
+      menu.setAttribute('aria-label', t('subpages'));
 
       this.backdrop = h('div', { class: 'usm-backdrop', 'aria-hidden': 'true', onclick: () => this.close() });
       document.body.append(this.backdrop);
@@ -44,35 +54,35 @@
       };
       document.addEventListener('keydown', this.onKey);
 
-      // Swipe left to close.
-      let x0 = null;
-      let dx = 0;
+      // Swipe down to close (only when the list is scrolled to the top).
+      let y0 = null;
+      let dy = 0;
       this.onTouchStart = (e) => {
-        if (!this.isOpen() || e.touches.length !== 1) return;
-        x0 = e.touches[0].clientX;
-        dx = 0;
+        if (!this.isOpen() || e.touches.length !== 1 || menu.scrollTop > 0) return;
+        y0 = e.touches[0].clientY;
+        dy = 0;
       };
       this.onTouchMove = (e) => {
-        if (x0 == null) return;
-        dx = Math.min(0, e.touches[0].clientX - x0);
-        if (dx < -8) {
+        if (y0 == null) return;
+        dy = Math.max(0, e.touches[0].clientY - y0);
+        if (dy > 8) {
           menu.style.transition = 'none';
-          menu.style.transform = `translateX(${dx}px)`;
+          menu.style.transform = `translateY(${dy}px)`;
         }
       };
       this.onTouchEnd = () => {
-        if (x0 == null) return;
+        if (y0 == null) return;
         menu.style.transition = '';
         menu.style.transform = '';
-        if (dx < -70) this.close();
-        x0 = null;
+        if (dy > 90) this.close();
+        y0 = null;
       };
       menu.addEventListener('touchstart', this.onTouchStart, { passive: true });
       menu.addEventListener('touchmove', this.onTouchMove, { passive: true });
       menu.addEventListener('touchend', this.onTouchEnd);
       menu.addEventListener('touchcancel', this.onTouchEnd);
 
-      // Back/forward cache: never restore an open drawer.
+      // Back/forward cache: never restore an open sheet.
       this.onPageShow = () => this.close(false);
       window.addEventListener('pageshow', this.onPageShow);
     },
@@ -85,8 +95,7 @@
       this.backdrop.classList.add('usm-open');
       document.documentElement.classList.add('usm-lock');
       this.btn?.setAttribute('aria-expanded', 'true');
-      this.btn?.setAttribute('aria-label', t('closeMenu'));
-      const target = this.menu.querySelector('a.selected') || this.menu.querySelector('a');
+      const target = [...this.menu.querySelectorAll('a.selected')].pop();
       if (target) this.menu.scrollTop = Math.max(0, target.offsetTop - this.menu.clientHeight / 2);
       setTimeout(() => this.head.querySelector('button')?.focus({ preventScroll: true }), 30);
     },
@@ -96,14 +105,17 @@
       this.backdrop.classList.remove('usm-open');
       document.documentElement.classList.remove('usm-lock');
       this.btn?.setAttribute('aria-expanded', 'false');
-      this.btn?.setAttribute('aria-label', t('openMenu'));
       if (restoreFocus) this.btn?.focus({ preventScroll: true });
     },
     unmount() {
+      const btn = document.getElementById('usm-menu-btn');
+      btn?.removeAttribute('disabled');
+      btn?.classList.remove('usm-context-static');
       if (!this.panel) return;
       this.close(false);
       this.head.remove();
       this.backdrop.remove();
+      this.menu.removeAttribute('aria-label');
       this.btn?.removeEventListener('click', this.onBtn);
       document.removeEventListener('keydown', this.onKey);
       window.removeEventListener('pageshow', this.onPageShow);

@@ -1,7 +1,7 @@
 /* <top-scroller>: round floating button, icon only */
 :host > div[data-is-visible] {
   right: 16px !important;
-  bottom: calc(16px + env(safe-area-inset-bottom)) !important;
+  bottom: calc(var(--usm-nav-h, 0px) + 16px + env(safe-area-inset-bottom)) !important;
   border: 0 !important;
   border-radius: 50%;
   background: var(--usm-surface) !important;
