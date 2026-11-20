@@ -1,0 +1,571 @@
+/*
+ * Global (document-level) styles. Only applied while the mobile view is active
+ * (the sheet is emptied otherwise), but selectors are still scoped with html[data-usm]
+ * to beat USOSweb's own specificity predictably.
+ */
+
+/* ---------- page ---------- */
+html[data-usm] {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--usm-topbar-h) + 12px);
+}
+html[data-usm] body {
+  background: var(--usm-page-bg) !important;
+  color: var(--font-color);
+  min-width: 0 !important;
+  -webkit-tap-highlight-color: transparent;
+  scrollbar-gutter: auto;
+}
+html[data-usm].usm-lock body {
+  overflow: hidden !important;
+}
+
+/* desktop header + CAS bar are replaced by .usm-topbar (account sheet holds their actions) */
+html[data-usm] #layout-cas-bar,
+html[data-usm] usos-layout > .do_not_print:has(> cas-bar),
+html[data-usm] app-header {
+  display: none !important;
+}
+
+/* ---------- shared UI bits ---------- */
+.usm-icon {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+  display: block;
+  flex: none;
+}
+.usm-icon-btn {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 48px;
+  height: 48px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.usm-icon-btn[hidden] {
+  display: none;
+}
+.usm-icon-btn:active {
+  background: color-mix(in srgb, currentColor 16%, transparent);
+}
+.usm-icon-btn:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -4px;
+}
+.usm-avatar {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--usm-accent);
+  color: var(--usm-accent-fg);
+  font: 700 14px/1 var(--usm-font);
+  letter-spacing: 0.02em;
+}
+.usm-avatar .usm-icon {
+  width: 26px;
+  height: 26px;
+}
+
+/* ---------- top bar ---------- */
+.usm-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  box-sizing: content-box;
+  height: var(--usm-topbar-h);
+  padding: env(safe-area-inset-top) 4px 0;
+  background: var(--usm-topbar-bg);
+  color: var(--usm-topbar-fg);
+  box-shadow: var(--usm-topbar-shadow);
+  font-family: var(--usm-font);
+}
+.usm-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0 4px;
+  color: inherit !important;
+  text-decoration: none !important;
+}
+.usm-brand img {
+  height: 28px;
+  width: auto;
+  flex: none;
+}
+.usm-brand-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.15;
+}
+.usm-brand-text b {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.usm-brand-text small {
+  font-size: 12px;
+  opacity: 0.8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- drawer (menu-left content; positioning lives in main-panel.css) ---------- */
+.usm-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--usm-backdrop);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.26s ease;
+}
+.usm-backdrop.usm-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.usm-drawer-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: content-box;
+  height: var(--usm-topbar-h);
+  padding: env(safe-area-inset-top) 4px 0 20px;
+  background: var(--usm-drawer-head-bg);
+  color: var(--usm-drawer-head-fg);
+  font: 600 17px/1 var(--usm-font);
+}
+html[data-usm] menu-left {
+  font-family: var(--usm-font);
+  color: var(--usm-fg);
+}
+html[data-usm] menu-left > ul {
+  padding: 4px 0 8px;
+}
+html[data-usm] menu-left > ul > li {
+  margin: 0;
+  padding: 6px 0;
+}
+html[data-usm] menu-left > ul > li:not(:first-child) {
+  border-top: 1px solid var(--usm-border);
+}
+html[data-usm] menu-left li:empty {
+  display: none;
+}
+html[data-usm] menu-left li :is(a, span) {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  min-height: 44px;
+  margin: 0;
+  padding: 8px 20px;
+  color: var(--usm-fg);
+  text-decoration: none !important;
+  text-transform: none;
+}
+html[data-usm] menu-left > ul > li > :is(a, span) {
+  min-height: 48px;
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+html[data-usm] menu-left li li :is(a, span) {
+  padding-left: 44px;
+  font-size: 15px;
+  background-position: 18px center !important;
+}
+html[data-usm] menu-left li li li :is(a, span) {
+  padding-left: 60px;
+  background-position: 34px center !important;
+}
+html[data-usm] menu-left li :is(a, span).selected {
+  background-color: var(--usm-selected-bg);
+  box-shadow: inset 3px 0 0 var(--usm-accent);
+  font-weight: 600;
+}
+html[data-usm] menu-left li :is(a, span).disabled {
+  color: var(--usm-muted);
+}
+html[data-usm] menu-left a:active {
+  background-color: var(--usm-selected-bg);
+}
+html[data-usm] menu-left .ue-box {
+  margin: 16px 20px 8px;
+}
+html[data-usm] menu-left .ue-logo {
+  height: 28px;
+  width: auto;
+}
+html[data-usm] menu-left .ue-box a {
+  padding: 0;
+  min-height: 0;
+  color: var(--usm-fg);
+}
+
+/* ---------- account bottom sheet ---------- */
+dialog.usm-sheet {
+  position: fixed;
+  inset: auto 0 0 0;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  max-height: 90dvh;
+  margin: 0 auto;
+  padding: 0 0 calc(12px + env(safe-area-inset-bottom));
+  border: 0;
+  border-radius: var(--usm-radius-lg) var(--usm-radius-lg) 0 0;
+  background: var(--usm-surface);
+  color: var(--usm-fg);
+  box-shadow: var(--usm-shadow-lg);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  font: 400 15px/1.4 var(--usm-font);
+}
+dialog.usm-sheet::backdrop {
+  background: var(--usm-backdrop);
+}
+dialog.usm-sheet[open] {
+  animation: usm-sheet-in 0.26s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes usm-sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  dialog.usm-sheet[open] {
+    animation: none;
+  }
+}
+.usm-sheet-grip {
+  width: 36px;
+  height: 4px;
+  margin: 8px auto 0;
+  border-radius: 2px;
+  background: var(--usm-border);
+}
+.usm-sheet-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 8px 12px 20px;
+  border-bottom: 1px solid var(--usm-border);
+}
+.usm-sheet-head .usm-avatar {
+  width: 44px;
+  height: 44px;
+  font-size: 17px;
+}
+.usm-avatar-anon {
+  background: var(--usm-surface-2);
+  color: var(--usm-muted);
+}
+.usm-sheet-who {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+.usm-sheet-who small {
+  color: var(--usm-muted);
+  font-size: 12.5px;
+}
+.usm-sheet-who b {
+  font-weight: 600;
+  font-size: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.usm-sheet-list {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 0;
+}
+.usm-sheet-foot {
+  border-top: 1px solid var(--usm-border);
+  margin-top: 8px;
+}
+.usm-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 52px;
+  margin: 0;
+  padding: 0 20px;
+  border: 0;
+  background: none;
+  color: inherit !important;
+  font: inherit;
+  font-size: 15.5px;
+  text-align: left;
+  text-decoration: none !important;
+  cursor: pointer;
+}
+.usm-row .usm-icon {
+  color: var(--usm-muted);
+}
+.usm-row:active {
+  background: var(--usm-selected-bg);
+}
+.usm-row-primary {
+  margin: 4px 16px;
+  padding: 0 16px;
+  border-radius: var(--usm-radius);
+  background: var(--usm-accent);
+  color: var(--usm-accent-fg) !important;
+  font-weight: 600;
+}
+.usm-row-primary .usm-icon {
+  color: inherit;
+}
+.usm-sheet-section {
+  padding: 8px 20px 10px;
+}
+.usm-sheet-label {
+  margin: 6px 0 10px;
+  color: var(--usm-muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.usm-seg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  border-radius: calc(var(--usm-radius) + 4px);
+  background: var(--usm-surface-2);
+  border: 1px solid var(--usm-border);
+}
+.usm-seg > * {
+  display: grid;
+  place-items: center;
+  min-height: 40px;
+  border-radius: var(--usm-radius);
+  color: var(--usm-muted) !important;
+  font-weight: 500;
+  text-decoration: none !important;
+}
+.usm-seg > [aria-current] {
+  background: var(--usm-surface);
+  color: var(--usm-fg) !important;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.14);
+}
+.usm-themes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.usm-theme-opt {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  margin: 0;
+  padding: 6px 6px 8px;
+  border: 2px solid var(--usm-border);
+  border-radius: calc(var(--usm-radius) + 4px);
+  background: var(--usm-surface);
+  color: var(--usm-fg);
+  font: 500 13px/1.2 var(--usm-font);
+  text-align: center;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.usm-theme-opt[aria-checked='true'] {
+  border-color: var(--usm-accent);
+  box-shadow: 0 0 0 1px var(--usm-accent);
+  font-weight: 600;
+}
+.usm-swatch {
+  display: grid;
+  grid-template-rows: 14px 1fr;
+  gap: 0;
+  height: 56px;
+  border-radius: calc(var(--usm-radius) - 2px);
+  overflow: hidden;
+  background: var(--sw-bg);
+  border: 1px solid rgba(127, 127, 140, 0.25);
+  position: relative;
+}
+.usm-swatch i {
+  display: block;
+}
+.usm-swatch i:nth-child(1) {
+  background: var(--sw-top);
+}
+.usm-swatch i:nth-child(2) {
+  position: absolute;
+  left: 8px;
+  top: 22px;
+  width: 22px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--sw-accent);
+}
+.usm-swatch i:nth-child(3),
+.usm-swatch i:nth-child(4) {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  height: 8px;
+  border-radius: 3px;
+  background: var(--sw-line);
+  box-shadow: 0 0 0 1px rgba(127, 127, 140, 0.12);
+}
+.usm-swatch i:nth-child(3) {
+  top: 32px;
+}
+.usm-swatch i:nth-child(4) {
+  top: 44px;
+  right: 22px;
+}
+
+/* ---------- main content ---------- */
+html[data-usm] #layout-main-content {
+  line-height: 1.45;
+  overflow-wrap: break-word;
+  min-width: 0;
+}
+html[data-usm] #layout-main-content :is(img, video, iframe, embed, object, canvas) {
+  max-width: 100%;
+}
+html[data-usm] #layout-main-content img {
+  height: auto;
+}
+html[data-usm] #layout-main-content :is(h1, .wrtext h1) {
+  font-size: 1.35rem;
+  line-height: 1.25;
+}
+html[data-usm] #layout-main-content :is(h2, .wrtext h2) {
+  font-size: 1.125rem;
+  line-height: 1.3;
+}
+html[data-usm] #layout-main-content pre {
+  white-space: pre-wrap;
+}
+.usm-hscroll {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+/* "last data migration / document modified N days ago" — single-cell note tables */
+html[data-usm] .wrtext table.grey:has(> tbody > tr:only-child > td:only-child > span.note:only-child) {
+  float: none !important;
+  display: block;
+  margin: 0 0 4px !important;
+  border: 0;
+}
+html[data-usm] .wrtext table.grey:has(> tbody > tr:only-child > td:only-child > span.note:only-child) td {
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+/* ---------- footer (light DOM parts) ---------- */
+html[data-usm] usos-footer > #footer-logo img {
+  height: 3rem;
+}
+html[data-usm] usos-footer {
+  font-size: 14px;
+}
+
+/* ---------- dark theme: USOSweb content CSS hard-codes light colours ---------- */
+html[data-usm][data-usm-theme='dark'] #layout-main-content {
+  color: var(--usm-fg);
+}
+html[data-usm][data-usm-theme='dark'] .wrtext table.grey > * > tr > td,
+html[data-usm][data-usm-theme='dark'] .wrtext .layout-table.grey > .layout-row > .layout-cell,
+html[data-usm][data-usm-theme='dark'] .wrtext table.wrnav tr.even_row td {
+  background-color: var(--usm-surface);
+  border-color: var(--usm-border);
+  color: var(--usm-fg);
+}
+html[data-usm][data-usm-theme='dark'] .wrtext table.grey > * > :is(tr.even, tr.strong) > td,
+html[data-usm][data-usm-theme='dark'] .wrtext table.grey > .autostrong > tr:nth-child(2n + 1) > td,
+html[data-usm][data-usm-theme='dark'] .wrtext table.wrnav tr.odd_row td,
+html[data-usm][data-usm-theme='dark'] .wrtext table.wrnav :is(tr.wrgrey td, td.wrgrey),
+html[data-usm][data-usm-theme='dark'] .wrtext table.grey > * > tr.midnote > td,
+html[data-usm][data-usm-theme='dark'] .wrtext table.wrnav tr.midnote td {
+  background-color: var(--usm-surface-2);
+  color: var(--usm-fg);
+  border-color: var(--usm-border);
+}
+html[data-usm][data-usm-theme='dark'] .wrtext table.grey > * > :is(tr.red > td, tr > td.red) {
+  background: rgba(240, 138, 138, 0.18);
+}
+html[data-usm][data-usm-theme='dark'] .wrtext table.grey > * > :is(tr.sumowanie, tr.sumowanie_first, tr.sumowanie_suma) > td {
+  background: rgba(111, 209, 166, 0.14);
+}
+html[data-usm][data-usm-theme='dark'] .wrtext :is(.note, .wrnote, a.wrnote, a.wrgrey, table.grey td .dim) {
+  color: var(--usm-muted);
+}
+html[data-usm][data-usm-theme='dark'] .wrtext :is(input:not([type='checkbox']):not([type='radio']), select, textarea) {
+  background: var(--usm-surface-2);
+  color: var(--usm-fg);
+  border-color: var(--usm-border);
+}
+html[data-usm][data-usm-theme='dark'] .wrtext .greenbox {
+  background-color: rgba(111, 209, 166, 0.12);
+  border-color: rgba(111, 209, 166, 0.4);
+  color: var(--usm-fg);
+}
+html[data-usm][data-usm-theme='dark'] .wrtext .disabled {
+  color: #77748a;
+}
+html[data-usm][data-usm-theme='dark'] usos-footer > #footer-logo img {
+  padding: 8px 12px;
+  border-radius: var(--usm-radius);
+  background: #f2f1f8;
+}
+
+/* ---------- usos-dialog content: full-width actions ---------- */
+html[data-usm] usos-dialog usos-link {
+  display: flex;
+  margin: 0 0 10px;
+}
+
+/* ---------- search rows: [usos-selector …][Szukaj] → field full width, button below ---------- */
+html[data-usm] #layout-main-content .flex:has(> .stretch usos-selector) {
+  flex-wrap: wrap;
+  row-gap: 8px;
+}
+html[data-usm] #layout-main-content .flex:has(> .stretch usos-selector) > .stretch {
+  flex: 1 1 100%;
+  min-width: 0;
+}
+html[data-usm] #layout-main-content .flex:has(> .stretch usos-selector) > :is(input[type='submit'], button) {
+  margin-left: auto;
+  min-height: 40px;
+}

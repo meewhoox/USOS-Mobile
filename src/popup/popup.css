@@ -1,0 +1,93 @@
+:root {
+  color-scheme: light dark;
+  --fg: #06022e;
+  --bg: #ffffff;
+  --muted: #57546b;
+  --border: #dadade;
+  --accent: #fbb040;
+  --primary: #4f4c6a;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fg: #e8e6f3;
+    --bg: #17161f;
+    --muted: #a9a6bf;
+    --border: #34324a;
+  }
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  padding: 16px;
+  min-width: 280px;
+  background: var(--bg);
+  color: var(--fg);
+  font: 15px/1.4 Roboto, system-ui, sans-serif;
+}
+header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+h1 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+fieldset {
+  margin: 0 0 12px;
+  padding: 4px 0 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+legend {
+  padding: 8px 0 4px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  cursor: pointer;
+}
+input[type='radio'] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--primary);
+}
+#perm {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
+}
+#perm p {
+  margin: 0 0 8px;
+}
+button.primary {
+  min-height: 36px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--primary);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+a.open {
+  display: block;
+  padding: 10px 0 0;
+  border-top: 1px solid var(--border);
+  color: inherit;
+  font-weight: 500;
+}

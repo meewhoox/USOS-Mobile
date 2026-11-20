@@ -1,0 +1,48 @@
+/* <main-panel>: single column; left menu becomes an off-canvas drawer (state: [usm-drawer-open]) */
+:host {
+  box-shadow: none !important;
+  background-color: var(--usm-surface) !important;
+}
+:host > div {
+  display: block !important;
+  border-radius: 0 !important;
+}
+:host #page-body {
+  display: flow-root !important; /* keep the content's margins inside (no collapsing through) */
+  width: auto !important;
+  min-width: 0;
+}
+:host #page-body ::slotted(*) {
+  margin: 16px 16px 28px !important;
+}
+
+/* !important inside a shadow tree beats light-DOM !important; transform is left
+   overridable so the swipe gesture can drive it with an inline style. */
+:host ::slotted([slot='left-menu']) {
+  position: fixed !important;
+  inset: 0 auto 0 0 !important;
+  z-index: 1001 !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  width: min(86vw, 340px) !important;
+  height: auto !important;
+  padding: 0 0 calc(24px + env(safe-area-inset-bottom)) !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  background: var(--usm-drawer-bg) !important;
+  box-shadow: none;
+  visibility: hidden;
+  transform: translateX(-102%);
+  transition: transform 0.26s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear 0.26s, box-shadow 0.26s;
+}
+:host([usm-drawer-open]) ::slotted([slot='left-menu']) {
+  visibility: visible;
+  transform: none;
+  box-shadow: var(--usm-shadow-lg);
+  transition-delay: 0s;
+}
+@media (prefers-reduced-motion: reduce) {
+  :host ::slotted([slot='left-menu']) {
+    transition: none !important;
+  }
+}

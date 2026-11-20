@@ -1,0 +1,6 @@
+/* <footer-row>: bigger tap targets */
+:host > div {
+  margin: 0 !important;
+  min-height: 36px;
+  align-items: center;
+}

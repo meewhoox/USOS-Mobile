@@ -1,0 +1,12 @@
+/* MÓJ USOSWEB (home/index): 3-column dashboard → one column of frames */
+html[data-usm][data-usm-action='home/index'] .local-home-table {
+  display: block !important;
+  margin-top: 0 !important;
+}
+html[data-usm][data-usm-action='home/index'] .local-home-table > div {
+  width: auto !important;
+  min-width: 0;
+}
+html[data-usm][data-usm-action='home/index'] .local-home-table usos-frame {
+  margin: 0 0 16px !important;
+}

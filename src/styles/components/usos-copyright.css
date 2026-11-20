@@ -1,0 +1,5 @@
+#layoutCopyright {
+  padding: 4px 16px calc(24px + env(safe-area-inset-bottom));
+  color: var(--usm-muted) !important;
+  font-size: 12px !important;
+}

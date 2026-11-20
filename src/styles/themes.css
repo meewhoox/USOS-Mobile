@@ -1,0 +1,165 @@
+/*
+ * Themes = sets of CSS custom properties on <html>.
+ * --usm-*  : our own tokens (used by our UI and by the component overrides),
+ * --primary, --font-color, ... : USOSweb's own tokens (used by its components and content CSS).
+ * Custom properties inherit into shadow trees, so this is the only place themes are defined.
+ */
+
+/* ---------- Default: USOSweb / Politechnika Śląska colours, mobile layout ---------- */
+html[data-usm] {
+  color-scheme: light;
+  --usm-font: Roboto, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --usm-topbar-h: 56px;
+
+  --usm-page-bg: #efeff1;
+  --usm-surface: #ffffff;
+  --usm-surface-2: #f5f5f7;
+  --usm-fg: #06022e;
+  --usm-muted: #57546b;
+  --usm-border: #dadade;
+  --usm-accent: #fbb040;
+  --usm-accent-fg: #06022e;
+  --usm-link: #30538a;
+  --usm-focus: #30538a;
+
+  --usm-topbar-bg: #4f4c6a;
+  --usm-topbar-fg: #ffffff;
+  --usm-topbar-shadow: 0 2px 6px rgba(6, 6, 51, 0.18);
+
+  --usm-tabs-bg: #efeff1;
+  --usm-tab-fg: #06022e;
+  --usm-tab-active-fg: #06022e;
+  --usm-tab-active-bg: transparent;
+  --usm-tab-indicator: #fbb040;
+  --usm-tab-radius: 0px;
+  --usm-tab-h: 48px;
+  --usm-tab-gap: 0px;
+
+  --usm-drawer-bg: #efeff1;
+  --usm-drawer-head-bg: #4f4c6a;
+  --usm-drawer-head-fg: #ffffff;
+  --usm-selected-bg: rgba(79, 76, 106, 0.12);
+
+  --usm-radius: 6px;
+  --usm-radius-lg: 16px;
+  --usm-shadow: 0 3px 6px rgba(6, 6, 51, 0.12);
+  --usm-shadow-lg: 0 10px 32px rgba(6, 6, 51, 0.3);
+  --usm-backdrop: rgba(6, 2, 46, 0.45);
+}
+
+/* ---------- Modern: same identity (navy + PŚ gold), lighter and rounder ---------- */
+html[data-usm][data-usm-theme='modern'] {
+  --primary: #34305e;
+  --background-secondary: #f3f2f8;
+  --border: #e3e1ec;
+  --font-color: #14112e;
+  --on-background: #14112e;
+  --on-background-secondary: #14112e;
+
+  --usm-page-bg: #f4f3f8;
+  --usm-surface: #ffffff;
+  --usm-surface-2: #f6f5fa;
+  --usm-fg: #14112e;
+  --usm-muted: #5f5c75;
+  --usm-border: #e3e1ec;
+  --usm-accent: #f5a623;
+  --usm-accent-fg: #14112e;
+  --usm-link: #3b3a8c;
+  --usm-focus: #3b3a8c;
+
+  --usm-topbar-bg: linear-gradient(120deg, #221f45 0%, #3b3866 60%, #4f4c6a 100%);
+  --usm-topbar-shadow: inset 0 -2px 0 #f5a623, 0 4px 14px rgba(20, 17, 46, 0.18);
+
+  --usm-tabs-bg: #ffffff;
+  --usm-tab-fg: #5f5c75;
+  --usm-tab-active-fg: #221f45;
+  --usm-tab-active-bg: #fff0d4;
+  --usm-tab-indicator: transparent;
+  --usm-tab-radius: 999px;
+  --usm-tab-h: 36px;
+  --usm-tab-gap: 6px;
+
+  --usm-drawer-bg: #ffffff;
+  --usm-drawer-head-bg: linear-gradient(120deg, #221f45 0%, #4f4c6a 100%);
+  --usm-selected-bg: #f0eef9;
+
+  --usm-radius: 12px;
+  --usm-radius-lg: 20px;
+  --usm-shadow: 0 1px 2px rgba(20, 17, 46, 0.06), 0 4px 16px rgba(20, 17, 46, 0.07);
+  --usm-shadow-lg: 0 12px 40px rgba(20, 17, 46, 0.28);
+  --usm-backdrop: rgba(20, 17, 46, 0.4);
+}
+
+/* ---------- Dark ---------- */
+html[data-usm][data-usm-theme='dark'] {
+  color-scheme: dark;
+
+  /* USOSweb tokens */
+  --font-color: #e8e6f3;
+  --primary: #3a3760;
+  --on-primary: #ffffff;
+  --secondary: #fbb040;
+  --secondary-variant: #ffb37a;
+  --background: #17161f;
+  --on-background: #e8e6f3;
+  --background-secondary: #22212e;
+  --on-background-secondary: #e8e6f3;
+  --grey: #b4b2c5;
+  --border: #3a3850;
+  --ok-status: #8ccb5e;
+  --error: #f08a8a;
+  --warning: #e8b95a;
+  --accent-red: #f08a8a;
+  --accent-blue: #93b5f2;
+  --accent-green: #6fd1a6;
+  --accent-violet: #c6a2da;
+  --accent-context: #93b5f2;
+  --accent1: #f08a8a;
+  --accent2: #93b5f2;
+  --accent3: #6fd1a6;
+  --accent4: #c6a2da;
+  --link-color: #a5c0f5;
+  --link-color-visited: #c6a2da;
+
+  /* our tokens */
+  --usm-page-bg: #100f17;
+  --usm-surface: #17161f;
+  --usm-surface-2: #22212e;
+  --usm-fg: #e8e6f3;
+  --usm-muted: #a9a6bf;
+  --usm-border: #34324a;
+  --usm-accent: #fbb040;
+  --usm-accent-fg: #17161f;
+  --usm-link: #a5c0f5;
+  --usm-focus: #a5c0f5;
+
+  --usm-topbar-bg: #1e1c2c;
+  --usm-topbar-fg: #f2f1f8;
+  --usm-topbar-shadow: 0 1px 0 #2c2a3d;
+
+  --usm-tabs-bg: #17161f;
+  --usm-tab-fg: #a9a6bf;
+  --usm-tab-active-fg: #ffffff;
+  --usm-tab-active-bg: transparent;
+  --usm-tab-indicator: #fbb040;
+
+  --usm-drawer-bg: #1b1a26;
+  --usm-drawer-head-bg: #1e1c2c;
+  --usm-drawer-head-fg: #f2f1f8;
+  --usm-selected-bg: rgba(251, 176, 64, 0.12);
+
+  --usm-radius: 10px;
+  --usm-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --usm-shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
+  --usm-backdrop: rgba(0, 0, 0, 0.6);
+}
+
+/* module tiles (DLA STUDENTÓW, DLA WSZYSTKICH …) */
+html[data-usm][data-usm-theme='modern'] {
+  --usm-tile-icon: #34305e;
+  --usm-tile-title: #221f45;
+}
+html[data-usm][data-usm-theme='dark'] {
+  --usm-tile-icon: #a5c0f5;
+  --usm-tile-title: #c9d8fb;
+}

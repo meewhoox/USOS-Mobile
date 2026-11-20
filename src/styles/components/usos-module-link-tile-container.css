@@ -1,0 +1,12 @@
+/* <usos-module-link-tile-container>: one tile per row, compact */
+:host {
+  display: flex !important;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0 !important;
+}
+:host ::slotted(usos-module-link-tile) {
+  width: auto !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+}

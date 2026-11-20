@@ -1,0 +1,38 @@
+/* <usos-module-link-tile>: full-width row — icon, title, description */
+:host {
+  display: block;
+  border: 1px solid var(--usm-border);
+  border-radius: var(--usm-radius) !important;
+  background: var(--usm-surface);
+  box-shadow: none !important;
+}
+:host(:hover) {
+  background: var(--usm-surface-2) !important;
+}
+:host > a > div {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px;
+  padding: 12px 14px !important;
+}
+#icon {
+  width: 40px !important;
+  height: 40px !important;
+  mask-size: 36px 36px !important;
+  -webkit-mask-size: 36px 36px !important;
+  mask-position: center !important;
+  -webkit-mask-position: center !important;
+  background: var(--usm-tile-icon, rgb(29, 66, 135)) !important;
+}
+#content {
+  min-width: 0;
+}
+#title ::slotted(*) {
+  margin-bottom: 2px !important;
+  color: var(--usm-tile-title, rgb(29, 66, 135)) !important;
+}
+#text ::slotted(p) {
+  color: var(--usm-muted);
+  font-size: 13.5px;
+  line-height: 1.35 !important;
+}

@@ -1,0 +1,7 @@
+/* <usos-layout>: desktop forces min-width: 1200px */
+:host {
+  min-width: 0 !important;
+  max-width: none !important;
+  width: 100%;
+  min-height: 100vh !important;
+}

@@ -1,0 +1,70 @@
+/* <usos-dialog>: bottom sheet instead of a centred modal */
+:host > dialog {
+  position: fixed !important;
+  inset: auto 0 0 0 !important;
+  box-sizing: border-box;
+  width: 100% !important;
+  max-width: 560px !important;
+  max-height: 88vh !important;
+  max-height: 88dvh !important;
+  margin: 0 auto !important;
+  padding: 0 0 env(safe-area-inset-bottom) !important;
+  border-radius: var(--usm-radius-lg) var(--usm-radius-lg) 0 0 !important;
+  background: var(--usm-surface) !important;
+  color: var(--usm-fg) !important;
+  box-shadow: var(--usm-shadow-lg);
+}
+:host > dialog::backdrop {
+  background: var(--usm-backdrop) !important;
+}
+:host > dialog[open] {
+  animation: usm-sheet-in 0.26s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes usm-sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :host > dialog[open] {
+    animation: none;
+  }
+}
+focus-trap {
+  width: 100%;
+  max-width: none !important;
+  min-height: 0;
+}
+#titlebar {
+  min-height: 52px;
+  margin: 0 !important;
+  padding: 4px 4px 4px 20px !important;
+  border-radius: 0 !important;
+  background: var(--usm-topbar-bg) !important;
+  color: var(--usm-topbar-fg) !important;
+  font-size: 17px;
+}
+#close {
+  width: 44px !important;
+  height: 44px !important;
+  margin: 0 !important;
+  background: transparent !important;
+}
+#close::before {
+  width: 24px !important;
+  height: 24px !important;
+  top: 10px !important;
+  left: 10px !important;
+  background: currentColor !important;
+}
+#close {
+  color: var(--usm-topbar-fg);
+}
+#content {
+  padding: 16px 20px 20px !important;
+}
+#close,
+#close:focus {
+  border-radius: 50% !important;
+  outline-offset: -6px !important;
+}

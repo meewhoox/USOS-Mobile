@@ -1,0 +1,16 @@
+/* <usos-footer>: stacked, compact */
+:host {
+  padding: 4px 16px 8px !important;
+  background: var(--usm-page-bg) !important;
+  box-shadow: none !important;
+  border-top: 1px solid var(--usm-border);
+  color: var(--usm-fg);
+}
+#footer {
+  flex-direction: column !important;
+  align-items: flex-start !important;
+}
+#footer ::slotted(*) {
+  max-width: none !important;
+  padding: 12px 0 !important;
+}
