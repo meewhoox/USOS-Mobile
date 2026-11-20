@@ -86,6 +86,12 @@
       this.onPageShow = () => this.close(false);
       window.addEventListener('pageshow', this.onPageShow);
     },
+    /** Back gesture: close the sheet if it is open. */
+    back() {
+      if (!this.isOpen()) return false;
+      this.close();
+      return true;
+    },
     isOpen() {
       return this.panel?.hasAttribute(OPEN_ATTR);
     },
@@ -106,24 +112,6 @@
       document.documentElement.classList.remove('usm-lock');
       this.btn?.setAttribute('aria-expanded', 'false');
       if (restoreFocus) this.btn?.focus({ preventScroll: true });
-    },
-    unmount() {
-      const btn = document.getElementById('usm-menu-btn');
-      btn?.removeAttribute('disabled');
-      btn?.classList.remove('usm-context-static');
-      if (!this.panel) return;
-      this.close(false);
-      this.head.remove();
-      this.backdrop.remove();
-      this.menu.removeAttribute('aria-label');
-      this.btn?.removeEventListener('click', this.onBtn);
-      document.removeEventListener('keydown', this.onKey);
-      window.removeEventListener('pageshow', this.onPageShow);
-      this.menu.removeEventListener('touchstart', this.onTouchStart);
-      this.menu.removeEventListener('touchmove', this.onTouchMove);
-      this.menu.removeEventListener('touchend', this.onTouchEnd);
-      this.menu.removeEventListener('touchcancel', this.onTouchEnd);
-      this.panel = this.menu = this.btn = null;
     },
   });
 })();

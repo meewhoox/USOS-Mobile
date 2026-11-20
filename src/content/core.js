@@ -1,80 +1,46 @@
 /*
- * USOS Mobile — shared core for the isolated content scripts.
- * All content-script files share `globalThis.USM`; each file is an IIFE.
+ * USOS Mobile — shared core of the UI scripts (loaded after early.js, before features).
+ * All files share `globalThis.USM`; each file is an IIFE.
  */
 (() => {
   'use strict';
   if (globalThis.USM) return;
 
   const KEY = 'usm:settings';
-  const DEFAULTS = Object.freeze({ mode: 'auto', theme: 'default' });
+  const DEFAULTS = Object.freeze({ theme: 'default' });
   const THEMES = ['default', 'modern', 'dark'];
 
-  const ext = globalThis.browser?.storage ? globalThis.browser : globalThis.chrome?.storage ? globalThis.chrome : null;
-
-  /* ---------- settings ---------- */
+  /* ---------- settings (page localStorage, read synchronously by early.js too) ---------- */
   const normalize = (s) => {
     const out = { ...DEFAULTS, ...(s || {}) };
-    if (!['auto', 'always', 'off'].includes(out.mode)) out.mode = DEFAULTS.mode;
     if (!THEMES.includes(out.theme)) out.theme = DEFAULTS.theme;
     return out;
-  };
-  const readMirror = () => {
-    try {
-      return normalize(JSON.parse(localStorage.getItem(KEY) || '{}'));
-    } catch {
-      return normalize();
-    }
-  };
-  const writeMirror = (s) => {
-    try {
-      localStorage.setItem(KEY, JSON.stringify(s));
-    } catch {
-      /* storage blocked */
-    }
   };
 
   const listeners = new Set();
   const storage = {
-    async get() {
-      if (!ext) return readMirror();
+    get() {
       try {
-        const r = await ext.storage.local.get('settings');
-        return normalize(r.settings);
+        return normalize(JSON.parse(localStorage.getItem(KEY) || '{}'));
       } catch {
-        return readMirror();
+        return normalize();
       }
     },
-    async set(patch) {
-      const next = normalize({ ...(await storage.get()), ...patch });
-      if (ext) {
-        await ext.storage.local.set({ settings: next }); // onChanged will notify
-      } else {
-        listeners.forEach((fn) => fn(next)); // dev harness: no extension APIs
+    set(patch) {
+      const next = normalize({ ...storage.get(), ...patch });
+      try {
+        localStorage.setItem(KEY, JSON.stringify(next));
+      } catch {
+        /* storage blocked */
       }
+      document.dispatchEvent(new CustomEvent('usm:settings', { detail: JSON.stringify(next) })); // → early.js
+      listeners.forEach((fn) => fn(next));
       return next;
     },
     onChange(fn) {
       listeners.add(fn);
     },
   };
-  if (ext) {
-    ext.storage.onChanged.addListener((changes, area) => {
-      if (area === 'local' && changes.settings) {
-        const next = normalize(changes.settings.newValue);
-        listeners.forEach((fn) => fn(next));
-      }
-    });
-  }
-
-  /** Mirror settings into page localStorage and hand them to the MAIN-world script. */
-  const pushSettings = (s) => {
-    writeMirror(s);
-    document.dispatchEvent(new CustomEvent('usm:settings', { detail: JSON.stringify(s) }));
-  };
-
-  const isPhone = () => /Mobi|Android.+Mobile|iPhone|iPod/i.test(navigator.userAgent);
-  const isActive = (s) => s.mode === 'always' || (s.mode === 'auto' && isPhone());
 
   /* ---------- i18n ---------- */
   const STRINGS = {
@@ -95,8 +61,6 @@
       themeDefault: 'Domyślny',
       themeModern: 'Nowoczesny',
       themeDark: 'Ciemny',
-      showFull: 'Pokaż pełną wersję strony',
-      mobileVersion: 'wersja mobilna',
       home: 'Strona główna',
       subpages: 'Podstrony',
       openSubpages: 'Pokaż podstrony sekcji',
@@ -124,8 +88,6 @@
       themeDefault: 'Default',
       themeModern: 'Modern',
       themeDark: 'Dark',
-      showFull: 'Show full site',
-      mobileVersion: 'mobile version',
       home: 'Home page',
       subpages: 'Subpages',
       openSubpages: 'Show section subpages',
@@ -166,8 +128,6 @@
     login: 'M11 7 9.6 8.4l2.6 2.6H2v2h10.2l-2.6 2.6L11 17l5-5-5-5zm9 12h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-8v2h8v14z',
     key: 'M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z',
     person: 'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z',
-    desktop:
-      'M21 2H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7v2H8v2h8v-2h-2v-2h7c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H3V4h18v12z',
     check: 'M9 16.17 4.83 12l-1.42 1.42L9 19 21 7l-1.41-1.41z',
     expandMore: 'M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z',
     catalog:
@@ -224,7 +184,6 @@
   /**
    * Make <usos-frame> elements collapsible using the component's native
    * `expandable`/`expanded` attributes; the open/closed state is remembered per page.
-   * Returns an undo function.
    */
   const collapsibleFrames = (frames, { storeKey, collapsed = () => false }) => {
     let state = {};
@@ -240,7 +199,6 @@
         /* ignore */
       }
     };
-    const undo = [];
     for (const frame of frames) {
       if (frame.hasAttribute('expandable')) continue;
       const key = frame.id || frame.querySelector('[slot="title"]')?.textContent.trim() || frame.className;
@@ -252,13 +210,7 @@
         save();
       });
       mo.observe(frame, { attributes: true, attributeFilter: ['expanded'] });
-      undo.push(() => {
-        mo.disconnect();
-        frame.removeAttribute('expandable');
-        frame.removeAttribute('expanded');
-      });
     }
-    return () => undo.forEach((fn) => fn());
   };
 
   /** "mój USOSweb" → "Mój USOSweb" (USOS uses lower-case labels in menus). */
@@ -277,9 +229,6 @@
     DEFAULTS,
     THEMES,
     storage,
-    pushSettings,
-    isPhone,
-    isActive,
     t,
     lang,
     h,
@@ -291,9 +240,9 @@
     cap,
     loginUrl,
     action,
-    /** Features: { id, mount(ctx), unmount?(ctx), update?(ctx) } — mounted in registration order. */
+    /** Features: { id, mount(ctx), update?(ctx), back?(ctx) } — mounted in registration order. */
     features: [],
-    /** Page modules: { id, match(action) => bool, mount(ctx), unmount?(ctx) }. */
+    /** Page modules: { id, match(action) => bool, mount(ctx) }. */
     pages: [],
     registerFeature(f) {
       this.features.push(f);

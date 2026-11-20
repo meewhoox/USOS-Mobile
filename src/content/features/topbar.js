@@ -75,9 +75,5 @@
       );
       layout.prepend(this.el);
     },
-    unmount() {
-      this.el?.remove();
-      this.el = null;
-    },
   });
 })();

@@ -30,16 +30,10 @@
       const main = document.getElementById('layout-main-content');
       if (!main) return;
       scan();
-      this.onResize = debounce(scan, 200);
-      window.addEventListener('resize', this.onResize);
-      window.addEventListener('load', this.onResize, { once: true }); // images may change widths
-      this.observer = new MutationObserver(debounce(scan, 150));
-      this.observer.observe(main, { childList: true, subtree: true });
-    },
-    unmount() {
-      this.observer?.disconnect();
-      window.removeEventListener('resize', this.onResize);
-      for (const wrap of document.querySelectorAll(`.${WRAP}`)) wrap.replaceWith(...wrap.childNodes);
+      const rescan = debounce(scan, 200);
+      window.addEventListener('resize', rescan);
+      window.addEventListener('load', rescan, { once: true }); // images may change widths
+      new MutationObserver(debounce(scan, 150)).observe(main, { childList: true, subtree: true });
     },
   });
 })();

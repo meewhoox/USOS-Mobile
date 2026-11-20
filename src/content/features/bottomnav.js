@@ -75,12 +75,5 @@
       document.addEventListener('focusin', this.onFocusIn);
       document.addEventListener('focusout', this.onFocusOut);
     },
-    unmount() {
-      document.removeEventListener('focusin', this.onFocusIn);
-      document.removeEventListener('focusout', this.onFocusOut);
-      document.documentElement.classList.remove('usm-has-bottomnav');
-      this.el?.remove();
-      this.el = null;
-    },
   });
 })();

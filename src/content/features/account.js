@@ -1,6 +1,6 @@
 /*
  * Account & settings bottom sheet (native <dialog>): user, login/logout, password,
- * language switch, theme picker, "show full site".
+ * language switch, theme picker.
  * Data comes from <cas-bar> attributes (logged-user, logout-url, passwd-url, lang-switch-url).
  */
 (() => {
@@ -101,16 +101,6 @@
           { class: 'usm-sheet-section' },
           h('div', { class: 'usm-sheet-label', id: 'usm-theme-label' }, t('appearance')),
           h('div', { class: 'usm-themes', role: 'radiogroup', 'aria-labelledby': 'usm-theme-label' }, this.themeButtons)
-        ),
-        h(
-          'div',
-          { class: 'usm-sheet-list usm-sheet-foot' },
-          h(
-            'button',
-            { type: 'button', class: 'usm-row', onclick: () => USM.storage.set({ mode: 'off' }) },
-            icon('desktop'),
-            h('span', null, t('showFull'))
-          )
         )
       );
       document.body.append(this.dialog);
@@ -124,22 +114,20 @@
       });
       this.dialog.addEventListener('close', () => document.documentElement.classList.remove('usm-lock'));
 
-      this.onBtn = () => {
+      btn.addEventListener('click', () => {
         this.dialog.showModal();
         document.documentElement.classList.add('usm-lock');
         closeBtn.focus();
-      };
-      btn.addEventListener('click', this.onBtn);
-      this.btn = btn;
+      });
+    },
+    /** Back gesture: close the sheet if it is open. */
+    back() {
+      if (!this.dialog?.open) return false;
+      this.dialog.close();
+      return true;
     },
     update(ctx) {
       this.themeButtons?.forEach((b) => b.setAttribute('aria-checked', String(b.dataset.theme === ctx.settings.theme)));
-    },
-    unmount() {
-      this.btn?.removeEventListener('click', this.onBtn);
-      if (this.dialog?.open) this.dialog.close();
-      this.dialog?.remove();
-      this.dialog = this.btn = this.themeButtons = null;
     },
   });
 })();

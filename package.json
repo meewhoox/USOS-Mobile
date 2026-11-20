@@ -2,14 +2,10 @@
   "name": "usos-mobile-polsl",
   "version": "0.1.0",
   "private": true,
-  "description": "Firefox (Android) extension: mobile layout for USOSweb at Politechnika Śląska",
+  "description": "Android app: mobile layout for USOSweb at Politechnika Śląska",
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "watch": "node scripts/build.mjs --watch",
-    "lint": "npx --yes web-ext@8 lint -s dist/firefox",
-    "run:desktop": "npx --yes web-ext@8 run -s dist/firefox --start-url https://usosweb.polsl.pl/kontroler.php?_action=news/default",
-    "run:android": "npx --yes web-ext@8 run -t firefox-android -s dist/firefox --firefox-apk org.mozilla.firefox",
-    "package": "npx --yes web-ext@8 build -s dist/firefox -a dist --overwrite-dest"
+    "watch": "node scripts/build.mjs --watch"
   }
 }

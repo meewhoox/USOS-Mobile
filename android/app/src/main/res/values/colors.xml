@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- USOS top bar colour (themes.css, theme "default") -->
+    <color name="bar">#4F4C6A</color>
+    <color name="accent">#FBB040</color>
+</resources>

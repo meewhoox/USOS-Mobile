@@ -453,10 +453,6 @@ dialog.usm-sheet[open] {
   flex-direction: column;
   padding: 6px 0;
 }
-.usm-sheet-foot {
-  border-top: 1px solid var(--usm-border);
-  margin-top: 8px;
-}
 .usm-row {
   display: flex;
   align-items: center;

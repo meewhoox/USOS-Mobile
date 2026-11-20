@@ -1,14 +1,13 @@
 /*
- * USOS Mobile — early script, runs in the PAGE (MAIN) world at document_start.
+ * USOS Mobile — early script, runs in the page at document start (before USOS renders).
  *
  * Responsibilities:
- *  - decide (synchronously, from a localStorage mirror of the settings) whether the
- *    mobile layout is active, so there is no flash of the desktop layout,
  *  - inject <meta name="viewport">,
  *  - append our per-component stylesheet to every USOS web component's shadow root
  *    (USOSweb 7 uses Lit + open shadow DOM + adoptedStyleSheets, no ::part()),
  *  - append the global stylesheet to the document,
- *  - react to settings pushed by the isolated content script ("usm:settings" event).
+ *  - apply the theme synchronously from localStorage (no flash), and again when
+ *    content/core.js changes it ("usm:settings" event).
  *
  * The build step wraps this file and defines `USM_CSS = { global, components: {tag: css} }`.
  */
@@ -20,18 +19,16 @@
   /* global USM_CSS */
   const CSS = USM_CSS;
   const KEY = 'usm:settings';
-  const DEFAULTS = { mode: 'auto', theme: 'default' };
+  const DEFAULTS = { theme: 'default' };
   const THEMES = ['default', 'modern', 'dark'];
 
-  const readMirror = () => {
+  const readSettings = () => {
     try {
       return { ...DEFAULTS, ...JSON.parse(localStorage.getItem(KEY) || '{}') };
     } catch {
       return { ...DEFAULTS };
     }
   };
-  const isPhone = () => /Mobi|Android.+Mobile|iPhone|iPod/i.test(navigator.userAgent);
-  const shouldEnable = (s) => s.mode === 'always' || (s.mode === 'auto' && isPhone());
 
   /* ---------- stylesheets ---------- */
   const DOC = '#document';
@@ -115,56 +112,43 @@
   };
 
   /* ---------- viewport ---------- */
-  let meta = null;
-  let metaObserver = null;
-  const setViewport = (on) => {
-    if (!on) {
-      metaObserver?.disconnect();
-      meta?.remove();
-      return;
-    }
-    if (!meta) {
-      meta = document.createElement('meta');
-      meta.name = 'viewport';
-      meta.id = 'usm-viewport';
-      meta.content = 'width=device-width, initial-scale=1, viewport-fit=cover';
-    }
+  const setViewport = () => {
+    const meta = document.createElement('meta');
+    meta.name = 'viewport';
+    meta.id = 'usm-viewport';
+    meta.content = 'width=device-width, initial-scale=1, viewport-fit=cover';
     const place = () => {
       if (!document.head) return false;
-      if (!meta.isConnected) document.head.prepend(meta);
+      document.head.prepend(meta);
       return true;
     };
     if (!place()) {
-      metaObserver = new MutationObserver(() => place() && metaObserver.disconnect());
-      metaObserver.observe(document, { childList: true, subtree: true });
+      const mo = new MutationObserver(() => place() && mo.disconnect());
+      mo.observe(document, { childList: true, subtree: true });
     }
   };
 
   /* ---------- activation ---------- */
-  let active = false;
-  const apply = (settings) => {
-    const on = shouldEnable(settings);
-    const changed = on !== active;
-    active = on;
-    if (changed) for (const [key, sheet] of sheets) sheet.replaceSync(on ? cssFor(key) : '');
-    whenRoot((html) => {
-      html.setAttribute('data-usm-theme', THEMES.includes(settings.theme) ? settings.theme : 'default');
-      // Lets page styles (styles/pages/*.css) scope themselves: html[data-usm-action='home/index'] …
-      html.setAttribute('data-usm-action', new URL(location.href).searchParams.get('_action') || '');
-      html.toggleAttribute('data-usm', on);
-    });
-    if (changed) setViewport(on);
-  };
+  const applyTheme = (settings) =>
+    whenRoot((html) => html.setAttribute('data-usm-theme', THEMES.includes(settings.theme) ? settings.theme : 'default'));
+
+  for (const [key, sheet] of sheets) sheet.replaceSync(cssFor(key));
+  setViewport();
+  applyTheme(readSettings());
+  whenRoot((html) => {
+    // Lets page styles (styles/pages/*.css) scope themselves: html[data-usm-action='home/index'] …
+    html.setAttribute('data-usm-action', new URL(location.href).searchParams.get('_action') || '');
+    html.setAttribute('data-usm', '');
+  });
 
   document.addEventListener('usm:settings', (e) => {
     try {
-      apply({ ...DEFAULTS, ...JSON.parse(e.detail) });
+      applyTheme({ ...DEFAULTS, ...JSON.parse(e.detail) });
     } catch {
       /* ignore malformed */
     }
   });
 
-  apply(readMirror());
   if (docDesc) document.adoptedStyleSheets = document.adoptedStyleSheets; // goes through our setter
   adoptExisting(document);
 })();

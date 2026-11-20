@@ -13,10 +13,7 @@
     match: (action) => action === 'home/index',
     mount() {
       const frames = document.querySelectorAll('#layout-main-content .local-home-table usos-frame');
-      this.undo = USM.collapsibleFrames(frames, { storeKey: 'usm:frames:home', collapsed: COLLAPSED });
-    },
-    unmount() {
-      this.undo?.();
+      USM.collapsibleFrames(frames, { storeKey: 'usm:frames:home', collapsed: COLLAPSED });
     },
   });
 })();

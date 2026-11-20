@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">USOS Mobile</string>
+    <string name="no_app_for_link">Brak aplikacji do otwarcia tego linku</string>
+    <string name="download_started">Pobieranie: %1$s</string>
+    <string name="download_failed">Nie udało się pobrać pliku</string>
+    <string name="old_webview">Zaktualizuj „Android System WebView” w Sklepie Play, aby wygląd mobilny ładował się bez migania.</string>
+</resources>
