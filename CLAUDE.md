@@ -36,11 +36,26 @@ Without a device, in the Chrome DevTools MCP browser (the user is logged into US
 4. `evaluate_script` → `() => window.__usmAudit()` (waits 1.2 s, returns JSON; field meanings in the header of `scripts/audit.js`). Red flags: `iw` (page wider than the screen → the fixed bars move/stretch), `overflow`, `escaped`, `squeezed`, `warns`.
 5. When done: remove `__usmSrc`/`__usmAudit` from `localStorage`; if the theme was changed, `USM.storage.set({ theme: 'default' })`.
 
+Important: iterate over all pages only when instructed by the user. Otherwise, test the affected pages plus this smoke set (pages that broke before or are the hardest layouts):
+- `home/index` (Mój USOSweb: tiles, mini timetables),
+- `home/plan` (timetable, horizontal scroll),
+- `dla_stud/rejestracja/kalendarz` (positioned labels in tables once widened the page),
+- `dla_stud/studia/oceny/index` (grades table),
+- `katalog2/przedmioty/szukajPrzedmiotu&_pattern=programowanie` (search results).
+
+For a full sweep, build the page list from the menus instead of a hard-coded list: `fetch` each section page (`news/default`, `home/index`, `dla_stud/index`, `dodatki/index`, `katalog2/index`), parse it with `DOMParser` and collect `menu-left a[href]`.
+
+Rules (tests run on the user's real account):
+- Navigate and open/close our sheets only. Never submit forms or click anything with side effects: registrations, elections, applications, "Zapisz" in preferences, USOSmail send, "Wyloguj", language switch.
+- If a page title starts with "Wymagane zalogowanie" (session expired), stop and ask the user to log in. Never try to log in yourself.
+- After CSS changes, also check the affected pages in the dark theme (`USM.storage.set({ theme: 'dark' })`, one screenshot), then reset to `default`.
+- Chrome can't check app-only behaviour: system-bar/keyboard insets, back button, downloads, hidden native scrollbar, refresh rate. The final check is on the phone; the user saves phone screenshots to their screenshots folder.
+
 Keep context usage low (screenshots are the most expensive tool output):
 - DPR 1 (`390x844x1`): a 390×844 screenshot is still readable and costs a fraction of DPR 3.
 - Audit first; screenshot only pages the audit flags or where layout must be judged visually. No `fullPage` by default: scroll the problem into view (`evaluate_script` + `scrollTo`) and take a viewport shot, or screenshot one element (`uid` from `take_snapshot`). JPEG.
 - `take_snapshot` (accessibility tree as text) for content/structure checks instead of a screenshot.
-- Sweeps over many pages: hand them to a subagent (only when the user asks for one), so the per-page output stays out of the main context.
+- Sweeps over multiple pages: hand them to a subagent, so the per-page output stays out of the main context. Decide whether the needed tests are big enough to benefit from that.
 
 Caveats: USOS pages refuse to load in an `iframe`, so every page needs its own navigation. A full-page screenshot shows the bottom nav mid-page (capture artifact). `dist/dev-inject.js` (same bundle) can still be run after load via `sourcePath`, but then the CSS lands after the components render, so you may catch transitions mid-way. `fetch`/XHR from the page to `localhost` is blocked by Chrome Private Network Access.
 
