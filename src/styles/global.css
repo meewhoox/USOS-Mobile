@@ -9,6 +9,9 @@ html[data-usm] {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   scroll-padding-top: calc(var(--usm-topbar-h) + 12px);
+  /* Anything wider than the screen would widen the layout viewport, and the fixed bars
+     (bottom nav) with it. Wide content must scroll in its own box instead (.usm-hscroll). */
+  overflow-x: clip !important;
 }
 html[data-usm] body {
   background: var(--usm-page-bg) !important;
@@ -16,8 +19,11 @@ html[data-usm] body {
   min-width: 0 !important;
   -webkit-tap-highlight-color: transparent;
   scrollbar-gutter: auto;
+  /* USOS sets overflow: auto here, which makes <body> the sticky container of .usm-topbar
+     (so it scrolled away). The page scrolls on the viewport. */
+  overflow: visible !important;
 }
-html[data-usm].usm-lock body {
+html[data-usm].usm-lock {
   overflow: hidden !important;
 }
 
@@ -620,6 +626,24 @@ html[data-usm] #layout-main-content pre {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-x: contain;
+}
+
+/* <usos-timetable> (plan zajęć, also on group/room pages): USOS sizes the wrapper with
+   width: fit-content, so the whole week pushes the page wider. Constrained, the component's
+   own #timetable scrolls horizontally and the hours column stays put. */
+html[data-usm] .timetable-wrapper {
+  width: auto !important;
+  max-width: 100% !important;
+}
+/* week switcher: date range on its own line, earlier ← → later below */
+html[data-usm] .timetable-wrapper > .flex:has(> .selected_week) {
+  column-gap: 12px !important;
+  row-gap: 4px !important;
+}
+html[data-usm] .timetable-wrapper > .flex > .selected_week {
+  order: -1;
+  flex: 1 0 100%;
+  justify-content: center;
 }
 
 /* "last data migration / document modified N days ago" — single-cell note tables */

@@ -96,6 +96,11 @@ class MainActivity : ComponentActivity() {
     private fun configureWebView() {
         WebView.setWebContentsDebuggingEnabled(applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0)
 
+        // The native scrollbar spans the whole WebView and would overlap the page's own
+        // top bar and bottom nav; inner scrollers (sheets, wide tables) are unaffected.
+        webView.isVerticalScrollBarEnabled = false
+        webView.isHorizontalScrollBarEnabled = false
+
         webView.settings.apply {
             javaScriptEnabled = true
             domStorageEnabled = true // settings + collapsed-tile state live in localStorage
@@ -221,7 +226,7 @@ class MainActivity : ComponentActivity() {
     private companion object {
         const val USOSWEB = "https://usosweb.polsl.pl"
         const val CAS = "https://usoscas.polsl.pl"
-        const val START_URL = "$USOSWEB/kontroler.php?_action=news/default"
+        const val START_URL = "$USOSWEB/kontroler.php?_action=home/index"
         val IN_APP_HOSTS = setOf("usosweb.polsl.pl", "usoscas.polsl.pl")
     }
 }

@@ -1,0 +1,10 @@
+/* PLAN ZAJĘĆ (home/plan) */
+
+/* "wyślij komuś ten plan" / "eksportuj" float right and squeeze the h1 to one letter per line */
+html[data-usm][data-usm-action='home/plan'] #layout-main-content .usos-ui > div.do_not_print:has(> usos-link) {
+  float: none !important;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 12px;
+}
