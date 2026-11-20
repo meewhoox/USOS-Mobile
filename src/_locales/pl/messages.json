@@ -9,7 +9,7 @@
   "themeDefault": { "message": "Domyślny" },
   "themeModern": { "message": "Nowoczesny" },
   "themeDark": { "message": "Ciemny" },
-  "permMissing": { "message": "Rozszerzenie nie ma jeszcze dostępu do usosweb.polsl.pl." },
+  "permMissing": { "message": "Rozszerzenie nie ma jeszcze dostępu do usosweb.polsl.pl i usoscas.polsl.pl (strona logowania)." },
   "permGrant": { "message": "Zezwól na dostęp" },
   "openUsos": { "message": "Otwórz USOSweb" }
 }

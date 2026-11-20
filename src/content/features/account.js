@@ -70,13 +70,18 @@
       this.dialog = h(
         'dialog',
         { class: 'usm-sheet', id: 'usm-account', 'aria-label': t('account') },
-        h('div', { class: 'usm-sheet-grip', 'aria-hidden': 'true' }),
+        // Grip + header stay pinned while the sheet content scrolls.
         h(
           'div',
-          { class: 'usm-sheet-head' },
-          btn.querySelector('.usm-avatar')?.cloneNode(true) || h('span', { class: 'usm-avatar usm-avatar-anon' }, icon('person')),
-          h('div', { class: 'usm-sheet-who' }, user ? [h('small', null, t('loggedInAs')), h('b', null, user)] : h('b', null, t('notLoggedIn'))),
-          closeBtn
+          { class: 'usm-sheet-top' },
+          h('div', { class: 'usm-sheet-grip', 'aria-hidden': 'true' }),
+          h(
+            'div',
+            { class: 'usm-sheet-head' },
+            btn.querySelector('.usm-avatar')?.cloneNode(true) || h('span', { class: 'usm-avatar usm-avatar-anon' }, icon('person')),
+            h('div', { class: 'usm-sheet-who' }, user ? [h('small', null, t('loggedInAs')), h('b', null, user)] : h('b', null, t('notLoggedIn'))),
+            closeBtn
+          )
         ),
         h(
           'nav',

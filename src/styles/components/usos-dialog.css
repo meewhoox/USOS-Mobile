@@ -62,6 +62,10 @@ focus-trap {
 }
 #content {
   padding: 16px 20px 20px !important;
+  scrollbar-width: none;
+}
+#content::-webkit-scrollbar {
+  display: none;
 }
 #close,
 #close:focus {

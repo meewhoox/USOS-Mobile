@@ -9,7 +9,7 @@
   "themeDefault": { "message": "Default" },
   "themeModern": { "message": "Modern" },
   "themeDark": { "message": "Dark" },
-  "permMissing": { "message": "The extension does not have access to usosweb.polsl.pl yet." },
+  "permMissing": { "message": "The extension does not have access to usosweb.polsl.pl and usoscas.polsl.pl (login page) yet." },
   "permGrant": { "message": "Grant access" },
   "openUsos": { "message": "Open USOSweb" }
 }

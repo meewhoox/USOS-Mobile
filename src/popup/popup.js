@@ -2,7 +2,8 @@
   'use strict';
   const api = globalThis.browser ?? globalThis.chrome;
   const DEFAULTS = { mode: 'auto', theme: 'default' };
-  const ORIGINS = { origins: ['https://usosweb.polsl.pl/*'] };
+  // Must list every host from manifest host_permissions (Firefox MV3 may leave them ungranted).
+  const ORIGINS = { origins: ['https://usosweb.polsl.pl/*', 'https://usoscas.polsl.pl/*'] };
 
   for (const el of document.querySelectorAll('[data-i18n]')) {
     el.textContent = api.i18n.getMessage(el.dataset.i18n) || el.dataset.i18n;

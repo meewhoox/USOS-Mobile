@@ -273,6 +273,7 @@ html.usm-has-bottomnav[data-usm] body {
   pointer-events: auto;
 }
 .usm-sheet-head-bar {
+  display: flow-root; /* keep the grip's margin inside (no gap above the pinned header) */
   position: sticky;
   top: 0;
   z-index: 1;
@@ -291,6 +292,10 @@ html.usm-has-bottomnav[data-usm] body {
 html[data-usm] menu-left {
   font-family: var(--usm-font);
   color: var(--usm-fg);
+  scrollbar-width: none; /* the sheet has rounded corners; a scrollbar looks off */
+}
+html[data-usm] menu-left::-webkit-scrollbar {
+  display: none;
 }
 html[data-usm] menu-left > ul {
   padding: 4px 0 8px;
@@ -374,7 +379,18 @@ dialog.usm-sheet {
   box-shadow: var(--usm-shadow-lg);
   overflow-y: auto;
   overscroll-behavior: contain;
+  scrollbar-width: none;
   font: 400 15px/1.4 var(--usm-font);
+}
+dialog.usm-sheet::-webkit-scrollbar {
+  display: none;
+}
+.usm-sheet-top {
+  display: flow-root; /* keep the grip's margin inside (no gap above the pinned header) */
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--usm-surface);
 }
 dialog.usm-sheet::backdrop {
   background: var(--usm-backdrop);
